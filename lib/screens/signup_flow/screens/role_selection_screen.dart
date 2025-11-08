@@ -9,12 +9,13 @@ class RoleSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 40),
               const Text(
                 'Welcome!',
                 textAlign: TextAlign.center,
@@ -26,7 +27,7 @@ class RoleSelectionScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
-              const SizedBox(height: 64),
+              const SizedBox(height: 48),
 
               // Mentee Card
               _buildRoleCard(
@@ -48,6 +49,7 @@ class RoleSelectionScreen extends StatelessWidget {
                 color: Colors.purple,
                 onTap: () => onRoleSelected(true),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
