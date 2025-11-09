@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../models/signup_data_new.dart';
 import 'screens/role_selection_screen.dart';
@@ -13,7 +12,8 @@ import 'screens/mentor/mentor_identity_screen.dart';
 import 'screens/mentor/mentor_education_screen.dart';
 import 'screens/mentor/mentor_strengths_screen.dart';
 import 'screens/mentor/mentor_activities_screen.dart';
-import 'screens/review_screen.dart';
+import 'screens/submission_screen.dart';
+import '../home_screen.dart';
 
 class SignUpFlowScreen extends StatefulWidget {
   const SignUpFlowScreen({super.key});
@@ -30,9 +30,9 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
 
   int get _totalSteps {
     if (_signUpData.isMentor == true) {
-      return 7; // Welcome + 5 mentor screens + Review
+      return 6; // Welcome + 5 mentor screens (no review)
     } else {
-      return 7; // Welcome + 5 mentee screens + Review
+      return 6; // Welcome + 5 mentee screens (no review)
     }
   }
 
@@ -60,8 +60,6 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
           return 'Strengths & Focus';
         case 5:
           return 'Activities';
-        case 6:
-          return 'Review';
         default:
           return '';
       }
@@ -77,8 +75,6 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
           return 'Areas of Interest';
         case 5:
           return 'Strengths';
-        case 6:
-          return 'Review';
         default:
           return '';
       }
@@ -99,12 +95,33 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
       return;
     }
 
-    // Move to next step
-    if (_currentStep < _totalSteps - 1) {
+    // Check if this is the last step
+    if (_currentStep == _totalSteps - 1) {
+      // Navigate to submission screen
+      _navigateToSubmission();
+    } else {
+      // Move to next step
       setState(() {
         _currentStep++;
       });
     }
+  }
+
+  void _navigateToSubmission() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => SubmissionScreen(
+          signUpData: _signUpData,
+          onSuccess: _navigateToHome,
+        ),
+      ),
+    );
+  }
+
+  void _navigateToHome() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
 
   void _handleBack() {
@@ -114,13 +131,6 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
         _validationError = null;
       });
     }
-  }
-
-  void _jumpToStep(int step) {
-    setState(() {
-      _currentStep = step;
-      _validationError = null;
-    });
   }
 
   String? _validateCurrentStep() {
@@ -276,33 +286,6 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
-  void _handleFinalSubmit() {
-    // Output final JSON
-    final jsonOutput = jsonEncode(_signUpData.toJson());
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Sign Up Complete'),
-        content: SingleChildScrollView(
-          child: SelectableText(
-            jsonOutput,
-            style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-            },
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCurrentScreen() {
     switch (_currentStep) {
       case 0:
@@ -337,12 +320,6 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
         } else {
           return MenteeInterestsScreen(signUpData: _signUpData);
         }
-      case 6:
-        return ReviewScreen(
-          signUpData: _signUpData,
-          onEdit: _jumpToStep,
-          onSubmit: _handleFinalSubmit,
-        );
       default:
         return const Center(child: Text('Unknown step'));
     }
@@ -355,7 +332,7 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
       return RoleSelectionScreen(onRoleSelected: _handleRoleSelection);
     }
 
-    final isReviewStep = _currentStep == 6;
+    final isLastStep = _currentStep == _totalSteps - 1;
 
     return Scaffold(
       appBar: AppBar(
@@ -480,17 +457,16 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
                   )
                 else
                   const SizedBox.shrink(),
-                if (!isReviewStep)
-                  ElevatedButton(
-                    onPressed: _handleNext,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
+                ElevatedButton(
+                  onPressed: _handleNext,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
                     ),
-                    child: const Text('Next'),
                   ),
+                  child: Text(isLastStep ? 'Submit' : 'Next'),
+                ),
               ],
             ),
           ),
