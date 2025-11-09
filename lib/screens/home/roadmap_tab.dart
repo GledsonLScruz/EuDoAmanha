@@ -154,7 +154,8 @@ class _RoadMapTabState extends State<RoadMapTab> {
 
       // Parse cached data
       final data = jsonDecode(cachedJson) as Map<String, dynamic>;
-      return RoadmapResponse.fromJson(data);
+      RoadmapResponse response = RoadmapResponse.fromJson(data);
+      return response;
     } catch (e) {
       // If cache is corrupted, clear it
       print('Error loading from cache: $e');
