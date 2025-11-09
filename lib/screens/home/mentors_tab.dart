@@ -501,15 +501,7 @@ class _MentorsTabState extends State<MentorsTab> {
                   */
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        // TODO: Connect with mentor
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Conectar com ${mentor.mentorName}'),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
-                      },
+                      onPressed: () => _showConnectDialog(context, mentor),
                       icon: const Icon(Icons.connect_without_contact, size: 18),
                       label: const Text('Conectar'),
                       style: ElevatedButton.styleFrom(
@@ -579,6 +571,311 @@ class _MentorsTabState extends State<MentorsTab> {
           ),
         ),
       ),
+    );
+  }
+
+  /// Show dialog to connect with mentor
+  void _showConnectDialog(BuildContext context, Mentor mentor) {
+    final messageController = TextEditingController(
+      text:
+          'Olá ${mentor.mentorName.split(' ').first}, gostaria de me conectar com você e aprender com sua experiência! Acredito que sua trajetória pode me ajudar muito no meu desenvolvimento profissional.',
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEC8206).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.connect_without_contact,
+                  color: Color(0xFFEC8206),
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Conectar com Mentor',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Enviar mensagem para ${mentor.mentorName}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF6B7280),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: messageController,
+                  maxLines: 5,
+                  maxLength: 500,
+                  decoration: InputDecoration(
+                    hintText: 'Digite sua mensagem...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Color(0xFFEC8206),
+                        width: 2,
+                      ),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(color: Color(0xFF6B7280)),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                final message = messageController.text.trim();
+                if (message.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Por favor, escreva uma mensagem'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+                Navigator.of(dialogContext).pop();
+                _sendMentorshipRequest(context, mentor.mentorId, message);
+              },
+              icon: const Icon(Icons.send, size: 18),
+              label: const Text('Enviar'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFEC8206),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      messageController.dispose();
+    });
+  }
+
+  /// Send mentorship request to API
+  Future<void> _sendMentorshipRequest(
+    BuildContext context,
+    int mentorId,
+    String message,
+  ) async {
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFEC8206)),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Enviando solicitação...',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    try {
+      // Get authorization header
+      final authHeader = await AuthService.getAuthorizationHeader();
+      final headers = {
+        ...ApiConfig.defaultHeaders,
+        if (authHeader != null) 'Authorization': authHeader,
+      };
+
+      // Prepare request body
+      final requestBody = {'mentor_id': mentorId, 'message': message};
+
+      final response = await http.post(
+        Uri.parse(ApiConfig.mentorshipRequestUrl),
+        headers: headers,
+        body: jsonEncode(requestBody),
+      );
+
+      // Close loading dialog
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Success
+        if (context.mounted) {
+          _showResultDialog(
+            context,
+            success: true,
+            title: 'Solicitação Enviada!',
+            message:
+                'Sua solicitação de mentoria foi enviada com sucesso. O mentor receberá sua mensagem em breve.',
+          );
+        }
+      } else if (response.statusCode == 401) {
+        // Unauthorized
+        if (context.mounted) {
+          _showResultDialog(
+            context,
+            success: false,
+            title: 'Sessão Expirada',
+            message: 'Sua sessão expirou. Por favor, faça login novamente.',
+          );
+        }
+      } else {
+        // Other error
+        if (context.mounted) {
+          _showResultDialog(
+            context,
+            success: false,
+            title: 'Erro ao Enviar',
+            message:
+                'Não foi possível enviar sua solicitação. Tente novamente mais tarde.',
+          );
+        }
+      }
+    } catch (e) {
+      // Close loading dialog
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+
+      // Network error
+      if (context.mounted) {
+        _showResultDialog(
+          context,
+          success: false,
+          title: 'Erro de Conexão',
+          message: 'Verifique sua conexão com a internet e tente novamente.',
+        );
+      }
+    }
+  }
+
+  /// Show result dialog (success or error)
+  void _showResultDialog(
+    BuildContext context, {
+    required bool success,
+    required String title,
+    required String message,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: success
+                      ? Colors.green.withOpacity(0.1)
+                      : Colors.red.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  success ? Icons.check_circle : Icons.error,
+                  size: 64,
+                  color: success ? Colors.green : Colors.red,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                message,
+                style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: success
+                      ? Colors.green
+                      : const Color(0xFFEC8206),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text('OK'),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
