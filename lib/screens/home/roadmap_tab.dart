@@ -12,7 +12,7 @@ class RoadMapTab extends StatelessWidget {
         children: [
           // Header
           const Text(
-            'Your Career RoadMap',
+            'Seu Mapa de Carreira',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -20,7 +20,7 @@ class RoadMapTab extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Guiding you from high school to college',
+            'Guiando você do ensino médio até a universidade',
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -29,19 +29,19 @@ class RoadMapTab extends StatelessWidget {
           const SizedBox(height: 32),
 
           // Recommended Courses Section
-          _buildSectionHeader('Recommended Courses', Icons.school),
+          _buildSectionHeader('Cursos Recomendados', Icons.school),
           const SizedBox(height: 16),
           _buildRecommendedCourses(),
           const SizedBox(height: 32),
 
           // Opportunities Section
-          _buildSectionHeader('Opportunities & Discounts', Icons.local_offer),
+          _buildSectionHeader('Oportunidades e Descontos', Icons.local_offer),
           const SizedBox(height: 16),
           _buildOpportunities(),
           const SizedBox(height: 32),
 
           // Upcoming Events Section
-          _buildSectionHeader('Upcoming Events', Icons.event),
+          _buildSectionHeader('Próximos Eventos', Icons.event),
           const SizedBox(height: 16),
           _buildEvents(),
           const SizedBox(height: 16),
@@ -78,28 +78,28 @@ class RoadMapTab extends StatelessWidget {
     // TODO: Replace with actual data from API
     final courses = [
       {
-        'name': 'Computer Science',
+        'name': 'Ciência da Computação',
         'university': 'MIT',
         'match': 95,
       },
       {
-        'name': 'Software Engineering',
-        'university': 'Stanford University',
+        'name': 'Engenharia de Software',
+        'university': 'Universidade de Stanford',
         'match': 88,
       },
       {
-        'name': 'Data Science',
+        'name': 'Ciência de Dados',
         'university': 'UC Berkeley',
         'match': 82,
       },
       {
-        'name': 'Information Systems',
+        'name': 'Sistemas de Informação',
         'university': 'Carnegie Mellon',
         'match': 75,
       },
       {
-        'name': 'Business Administration',
-        'university': 'Harvard University',
+        'name': 'Administração de Empresas',
+        'university': 'Universidade de Harvard',
         'match': 68,
       },
     ];
@@ -241,17 +241,17 @@ class RoadMapTab extends StatelessWidget {
     // TODO: Replace with actual data from API
     final opportunities = [
       {
-        'title': 'Harvard University - Merit Scholarship',
+        'title': 'Universidade de Harvard - Bolsa por Mérito',
         'discount': '50%',
         'description':
-            'Full tuition scholarship for students with exceptional academic performance and leadership qualities.',
-        'universities': ['Harvard University', 'MIT', 'Stanford University'],
+            'Bolsa integral para estudantes com desempenho acadêmico excepcional e qualidades de liderança.',
+        'universities': ['Universidade de Harvard', 'MIT', 'Universidade de Stanford'],
       },
       {
-        'title': 'STEM Excellence Program',
+        'title': 'Programa de Excelência STEM',
         'discount': '30%',
         'description':
-            'Scholarship program for students pursuing STEM fields with demonstrated passion and achievement in science and technology.',
+            'Programa de bolsas para estudantes que buscam áreas STEM com paixão e conquistas demonstradas em ciência e tecnologia.',
         'universities': [
           'UC Berkeley',
           'Carnegie Mellon',
@@ -260,11 +260,11 @@ class RoadMapTab extends StatelessWidget {
         ],
       },
       {
-        'title': 'First Generation College Student Grant',
+        'title': 'Bolsa para Primeira Geração Universitária',
         'discount': '40%',
         'description':
-            'Financial aid for first-generation college students to support their educational journey.',
-        'universities': ['Yale University', 'Princeton University', 'Columbia'],
+            'Auxílio financeiro para estudantes de primeira geração universitária para apoiar sua jornada educacional.',
+        'universities': ['Universidade de Yale', 'Universidade de Princeton', 'Columbia'],
       },
     ];
 
@@ -371,7 +371,7 @@ class RoadMapTab extends StatelessWidget {
 
               // Universities List
               const Text(
-                'Applies to:',
+                'Aplicável em:',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -414,31 +414,31 @@ class RoadMapTab extends StatelessWidget {
     // TODO: Replace with actual data from API
     final events = [
       {
-        'title': 'MIT Open House 2025',
+        'title': 'Portas Abertas MIT 2025',
         'type': 'Presencial',
         'location': 'Cambridge, MA',
         'date': '2025-03-15',
       },
       {
-        'title': 'Virtual Career Fair - Tech Industry',
+        'title': 'Feira de Carreiras Virtual - Tecnologia',
         'type': 'Online',
-        'location': 'Virtual Event',
+        'location': 'Evento Virtual',
         'date': '2025-02-20',
       },
       {
-        'title': 'Stanford University Campus Tour',
+        'title': 'Tour pelo Campus Stanford',
         'type': 'Presencial',
         'location': 'Stanford, CA',
         'date': '2025-03-28',
       },
       {
-        'title': 'STEM Scholarship Workshop',
+        'title': 'Workshop de Bolsas STEM',
         'type': 'Online',
-        'location': 'Virtual Event',
+        'location': 'Evento Virtual',
         'date': '2025-02-10',
       },
       {
-        'title': 'College Application Bootcamp',
+        'title': 'Bootcamp de Candidatura Universitária',
         'type': 'Presencial',
         'location': 'São Paulo, SP',
         'date': '2025-04-05',
@@ -591,19 +591,19 @@ class RoadMapTab extends StatelessWidget {
       final date = DateTime.parse(dateString);
       final months = [
         'Jan',
-        'Feb',
+        'Fev',
         'Mar',
-        'Apr',
-        'May',
+        'Abr',
+        'Mai',
         'Jun',
         'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
+        'Ago',
+        'Set',
+        'Out',
         'Nov',
-        'Dec'
+        'Dez'
       ];
-      return '${months[date.month - 1]} ${date.day}, ${date.year}';
+      return '${date.day} de ${months[date.month - 1]}, ${date.year}';
     } catch (e) {
       return dateString;
     }

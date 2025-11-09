@@ -110,7 +110,7 @@ class ProfileTab extends StatelessWidget {
                           // TODO: Navigate to edit profile screen
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Edit profile feature coming soon'),
+                              content: Text('Funcionalidade de edição em breve'),
                             ),
                           );
                         },

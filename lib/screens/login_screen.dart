@@ -32,11 +32,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void _validateEmail() {
     setState(() {
       if (_emailController.text.isEmpty) {
-        _emailError = 'Email is required';
+        _emailError = 'Email é obrigatório';
       } else if (!RegExp(
         r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
       ).hasMatch(_emailController.text)) {
-        _emailError = 'Please enter a valid email address';
+        _emailError = 'Por favor, insira um email válido';
       } else {
         _emailError = null;
       }
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _validatePassword() {
     setState(() {
       if (_passwordController.text.isEmpty) {
-        _passwordError = 'Password is required';
+        _passwordError = 'Senha é obrigatória';
       } else {
         _passwordError = null;
       }
@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    hintText: 'name@example.com',
+                    hintText: 'seu@email.com',
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.email_outlined),
                     errorText: _emailError,
@@ -211,8 +211,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Enter your password',
+                    labelText: 'Senha',
+                    hintText: 'Digite sua senha',
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
@@ -255,11 +255,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       // TODO: Implement forgot password
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Forgot password feature coming soon'),
+                          content: Text('Funcionalidade em breve'),
                         ),
                       );
                     },
-                    child: const Text('Forgot Password?'),
+                    child: const Text('Esqueceu a senha?'),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -311,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         )
                       : const Text(
-                          'Sign In',
+                          'Entrar',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

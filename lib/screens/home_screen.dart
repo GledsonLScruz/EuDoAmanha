@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
+            tooltip: 'Sair',
             onPressed: _handleLogout,
           ),
         ],
