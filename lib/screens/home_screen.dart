@@ -61,13 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
   String _getTitle() {
     switch (_currentIndex) {
       case 0:
-        return 'RoadMap';
+        return 'Perspectiva';
       case 1:
         return 'Mentores';
       case 2:
         return 'Perfil';
       default:
-        return 'CareerPath';
+        return 'Carreira';
     }
   }
 
