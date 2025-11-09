@@ -36,14 +36,12 @@ class _RoadMapTabState extends State<RoadMapTab> {
     try {
       // Check cache first if not forcing refresh
       if (!forceRefresh) {
-        final cachedData = await _loadFromCache();
+        var cachedData = await _loadFromCache();
         if (cachedData != null) {
           setState(() {
             _roadmapData = cachedData;
             _isLoading = false;
           });
-
-          return;
         }
       }
 
