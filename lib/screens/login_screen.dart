@@ -140,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -148,31 +149,34 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Logo/Icon
-                Icon(
-                  Icons.school_rounded,
-                  size: 80,
-                  color: Theme.of(context).colorScheme.primary,
+                // Logo/Icon with modern design
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEC8206).withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.school_rounded,
+                    size: 64,
+                    color: Color(0xFFEC8206),
+                  ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
 
                 // Title
-                const Text(
-                  'Welcome Back!',
+                Text(
+                  'Bem-vindo de volta!',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Sign in to continue your journey',
+                Text(
+                  'Entre para continuar sua jornada',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: const Color(0xFF6B7280),
+                      ),
                 ),
                 const SizedBox(height: 48),
 
@@ -263,23 +267,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 // General Error Message
                 if (_generalError != null)
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(14),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      color: Colors.red[50],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red[200]!),
+                      color: const Color(0xFFFEE2E2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFEF4444)),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.error_outline, color: Colors.red[700], size: 20),
-                        const SizedBox(width: 8),
+                        const Icon(Icons.error_outline, color: Color(0xFFEF4444), size: 20),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             _generalError!,
-                            style: TextStyle(
-                              color: Colors.red[700],
+                            style: const TextStyle(
+                              color: Color(0xFFEF4444),
                               fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -318,18 +323,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Divider
                 Row(
                   children: [
-                    Expanded(child: Divider(color: Colors.grey[300])),
+                    const Expanded(child: Divider(color: Color(0xFFE5E7EB))),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
-                        'OR',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
-                        ),
+                        'OU',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
-                    Expanded(child: Divider(color: Colors.grey[300])),
+                    const Expanded(child: Divider(color: Color(0xFFE5E7EB))),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -337,34 +341,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Create Account Button
                 OutlinedButton(
                   onPressed: _isLoading ? null : _navigateToSignUp,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
-                  child: const Text(
-                    'Create Account',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: const Text('Criar Conta'),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
                 // Terms and Privacy
                 Text(
-                  'By continuing, you agree to our Terms of Service and Privacy Policy',
+                  'Ao continuar, você concorda com nossos Termos de Serviço e Política de Privacidade',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontSize: 12,
+                      ),
                 ),
               ],
             ),

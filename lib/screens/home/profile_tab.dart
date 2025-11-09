@@ -36,13 +36,13 @@ class ProfileTab extends StatelessWidget {
           // Header Section with gradient background
           Container(
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                  Color(0xFFEC8206),
+                  Color(0xFFF59E42),
                 ],
               ),
             ),
@@ -118,7 +118,7 @@ class ProfileTab extends StatelessWidget {
                         label: const Text('Editar Perfil'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: Theme.of(context).colorScheme.primary,
+                          foregroundColor: const Color(0xFFEC8206),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -210,14 +210,14 @@ class ProfileTab extends StatelessWidget {
 
   Widget _buildInitialCircle(String initial) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.deepPurple.shade300,
-            Colors.deepPurple.shade600,
+            Color(0xFFEC8206),
+            Color(0xFFF59E42),
           ],
         ),
       ),
@@ -237,13 +237,14 @@ class ProfileTab extends StatelessWidget {
   Widget _buildSectionTitle(String title, IconData icon) {
     return Row(
       children: [
-        Icon(icon, size: 24, color: Colors.deepPurple),
+        Icon(icon, size: 24, color: const Color(0xFF2D3142)),
         const SizedBox(width: 8),
         Text(
           title,
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
+            color: Color(0xFF2D3142),
           ),
         ),
       ],

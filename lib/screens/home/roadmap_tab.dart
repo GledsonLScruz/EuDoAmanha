@@ -53,13 +53,21 @@ class RoadMapTab extends StatelessWidget {
   Widget _buildSectionHeader(String title, IconData icon) {
     return Row(
       children: [
-        Icon(icon, size: 24, color: Colors.deepPurple),
-        const SizedBox(width: 8),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEC8206).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 20, color: const Color(0xFFEC8206)),
+        ),
+        const SizedBox(width: 12),
         Text(
           title,
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
+            color: Color(0xFF2D3142),
           ),
         ),
       ],
@@ -124,16 +132,17 @@ class RoadMapTab extends StatelessWidget {
       matchColor = Colors.grey;
     }
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
       ),
       child: InkWell(
         onTap: () {
           // TODO: Navigate to course details
         },
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
@@ -142,12 +151,12 @@ class RoadMapTab extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.deepPurple.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  color: const Color(0xFFEC8206).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.school,
-                  color: Colors.deepPurple,
+                  color: Color(0xFFEC8206),
                   size: 28,
                 ),
               ),
@@ -163,6 +172,7 @@ class RoadMapTab extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF2D3142),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -171,7 +181,7 @@ class RoadMapTab extends StatelessWidget {
                         const Icon(
                           Icons.location_city,
                           size: 14,
-                          color: Colors.grey,
+                          color: Color(0xFF9CA3AF),
                         ),
                         const SizedBox(width: 4),
                         Expanded(

@@ -71,11 +71,11 @@ class MentorsTab extends StatelessWidget {
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(24.0),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          decoration: const BoxDecoration(
+            color: Colors.white,
             border: Border(
               bottom: BorderSide(
-                color: Colors.grey[300]!,
+                color: Color(0xFFE5E7EB),
                 width: 1,
               ),
             ),
@@ -88,14 +88,15 @@ class MentorsTab extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
+                  color: Color(0xFF2D3142),
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'Conecte-se com mentores que combinam com seu perfil',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey[700],
+                  color: Color(0xFF6B7280),
                 ),
               ),
             ],
@@ -142,10 +143,11 @@ class MentorsTab extends StatelessWidget {
       matchColor = Colors.grey;
     }
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
       ),
       child: InkWell(
         onTap: () {
@@ -341,14 +343,14 @@ class MentorsTab extends StatelessWidget {
 
   Widget _buildInitialCircle(String initial) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.deepPurple.shade300,
-            Colors.deepPurple.shade600,
+            Color(0xFFEC8206),
+            Color(0xFFF59E42),
           ],
         ),
       ),
