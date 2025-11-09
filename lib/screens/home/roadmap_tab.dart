@@ -156,10 +156,11 @@ class _RoadMapTabState extends State<RoadMapTab> {
 
       // Parse cached data
       final data = jsonDecode(cachedJson) as Map<String, dynamic>;
-      RoadmapResponse response = RoadmapResponse.fromJson(data);
-      return response;
+      return RoadmapResponse.fromJson(data);
     } catch (e) {
+      // If cache is corrupted, clear it
       print('Error loading from cache: $e');
+      await _clearCache();
       return null;
     }
   }
@@ -260,7 +261,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
           children: [
             // Header
             const Text(
-              'Seu Mapa de Carreira',
+              'Sua perspectiva de carreira',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),

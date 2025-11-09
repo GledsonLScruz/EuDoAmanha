@@ -227,16 +227,6 @@ class _MentorsTabState extends State<MentorsTab> {
   }
 
   Widget _buildMentorCard(BuildContext context, Mentor mentor) {
-    final matchPercent = mentor.matchPercentage;
-    Color matchColor;
-    if (matchPercent >= 80) {
-      matchColor = Colors.green;
-    } else if (matchPercent >= 60) {
-      matchColor = Colors.orange;
-    } else {
-      matchColor = Colors.grey;
-    }
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -297,34 +287,6 @@ class _MentorsTabState extends State<MentorsTab> {
                               ),
                             ),
                           ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Match Percentage Badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: matchColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: matchColor, width: 1.5),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.check_circle, size: 16, color: matchColor),
-                        const SizedBox(width: 4),
-                        Text(
-                          '$matchPercent%',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: matchColor,
-                          ),
                         ),
                       ],
                     ),
