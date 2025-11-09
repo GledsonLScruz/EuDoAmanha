@@ -14,16 +14,17 @@ class MyApp extends StatelessWidget {
       title: 'CareerPath',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFEC8206),
-          brightness: Brightness.light,
-        ).copyWith(
-          primary: const Color(0xFFEC8206),
-          secondary: const Color(0xFF2D3142),
-          surface: Colors.white,
-          background: const Color(0xFFF8F9FA),
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+        colorScheme:
+            ColorScheme.fromSeed(
+              seedColor: const Color(0xFFEC8206),
+              brightness: Brightness.light,
+            ).copyWith(
+              primary: const Color(0xFFEC8206),
+              secondary: const Color(0xFF2D3142),
+              surface: Colors.white,
+              background: const Color(0xFFF8F9FA),
+            ),
+        scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           foregroundColor: Color(0xFF2D3142),
@@ -91,7 +92,10 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: Color(0xFFEF4444)),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
@@ -117,14 +121,8 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Color(0xFF2D3142),
           ),
-          bodyLarge: TextStyle(
-            fontSize: 16,
-            color: Color(0xFF4B5563),
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 14,
-            color: Color(0xFF6B7280),
-          ),
+          bodyLarge: TextStyle(fontSize: 16, color: Color(0xFF4B5563)),
+          bodyMedium: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
         ),
       ),
       home: const LoginScreen(),
