@@ -38,12 +38,11 @@ class _RoadMapTabState extends State<RoadMapTab> {
       if (!forceRefresh) {
         final cachedData = await _loadFromCache();
         if (cachedData != null) {
-          if (mounted) {
-            setState(() {
-              _roadmapData = cachedData;
-              _isLoading = false;
-            });
-          }
+          setState(() {
+            _roadmapData = cachedData;
+            _isLoading = false;
+          });
+
           return;
         }
       }
@@ -157,7 +156,8 @@ class _RoadMapTabState extends State<RoadMapTab> {
 
       // Parse cached data
       final data = jsonDecode(cachedJson) as Map<String, dynamic>;
-      return RoadmapResponse.fromJson(data);
+      RoadmapResponse response = RoadmapResponse.fromJson(data);
+      return response;
     } catch (e) {
       print('Error loading from cache: $e');
       return null;

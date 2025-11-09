@@ -16,7 +16,7 @@ class _MentorsTabState extends State<MentorsTab> {
   bool _isLoading = true;
   String? _errorMessage;
   List<Mentor> _mentors = [];
-  int _threshold = 30;
+  int _threshold = 1;
   int _limit = 50;
 
   @override
