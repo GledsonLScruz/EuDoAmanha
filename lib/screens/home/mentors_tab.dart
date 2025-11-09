@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../config/api_config.dart';
 import '../../models/mentor_model.dart';
 import '../../services/auth_service.dart';
@@ -18,6 +19,9 @@ class _MentorsTabState extends State<MentorsTab> {
   List<Mentor> _mentors = [];
   int _threshold = 1;
   int _limit = 50;
+  static const String _cacheKey = 'mentors_cache';
+  static const String _cacheTimestampKey = 'mentors_cache_timestamp';
+  static const Duration _cacheDuration = Duration(days: 1);
 
   @override
   void initState() {
@@ -25,13 +29,25 @@ class _MentorsTabState extends State<MentorsTab> {
     _loadMentors();
   }
 
-  Future<void> _loadMentors() async {
+  Future<void> _loadMentors({bool forceRefresh = false}) async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
     try {
+      // Check cache first if not forcing refresh
+      if (!forceRefresh) {
+        var cachedData = await _loadFromCache();
+        if (cachedData != null) {
+          setState(() {
+            _mentors = cachedData;
+            _isLoading = false;
+          });
+          return;
+        }
+      }
+
       // Get user data from shared preferences
       final userData = await AuthService.getUserData();
 
@@ -67,6 +83,9 @@ class _MentorsTabState extends State<MentorsTab> {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         final mentorsResponse = MentorsResponse.fromJson(data);
 
+        // Save to cache
+        await _saveToCache(mentorsResponse.matches);
+
         if (mounted) {
           setState(() {
             _mentors = mentorsResponse.matches;
@@ -98,6 +117,67 @@ class _MentorsTabState extends State<MentorsTab> {
     }
   }
 
+  /// Load mentors data from cache if available and not expired
+  Future<List<Mentor>?> _loadFromCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedJson = prefs.getString(_cacheKey);
+      final cachedTimestamp = prefs.getInt(_cacheTimestampKey);
+
+      if (cachedJson == null || cachedTimestamp == null) {
+        return null;
+      }
+
+      // Check if cache is expired
+      final cacheTime = DateTime.fromMillisecondsSinceEpoch(cachedTimestamp);
+      final now = DateTime.now();
+      final difference = now.difference(cacheTime);
+
+      if (difference > _cacheDuration) {
+        // Cache expired, clear it
+        await _clearCache();
+        return null;
+      }
+
+      // Parse cached data
+      final data = jsonDecode(cachedJson) as List<dynamic>;
+      List<Mentor> mentors = data
+          .map((e) => Mentor.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return mentors;
+    } catch (e) {
+      // If cache is corrupted, clear it
+      print('Error loading from cache: $e');
+      await _clearCache();
+      return null;
+    }
+  }
+
+  /// Save mentors data to cache
+  Future<void> _saveToCache(List<Mentor> mentors) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = jsonEncode(mentors.map((e) => e.toJson()).toList());
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      await prefs.setString(_cacheKey, jsonString);
+      await prefs.setInt(_cacheTimestampKey, timestamp);
+    } catch (e) {
+      print('Error saving to cache: $e');
+    }
+  }
+
+  /// Clear mentors cache
+  Future<void> _clearCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_cacheKey);
+      await prefs.remove(_cacheTimestampKey);
+    } catch (e) {
+      print('Error clearing cache: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -109,120 +189,141 @@ class _MentorsTabState extends State<MentorsTab> {
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: _loadMentors,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Tentar Novamente'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFEC8206),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
+      return RefreshIndicator(
+        onRefresh: () => _loadMentors(forceRefresh: true),
+        color: const Color(0xFFEC8206),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height - 200,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF6B7280),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () => _loadMentors(forceRefresh: true),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Tentar Novamente'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFEC8206),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       );
     }
 
-    return Column(
-      children: [
-        // Header
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(24.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            border: Border(
-              bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+    return RefreshIndicator(
+      onRefresh: () => _loadMentors(forceRefresh: true),
+      color: const Color(0xFFEC8206),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24.0),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Encontre seu Mentor',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2D3142),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Conecte-se com mentores que combinam com seu perfil',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
+                ),
+              ],
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Encontre seu Mentor',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2D3142),
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Conecte-se com mentores que combinam com seu perfil',
-                style: TextStyle(fontSize: 16, color: Color(0xFF6B7280)),
-              ),
-            ],
-          ),
-        ),
 
-        // Mentors List
-        Expanded(
-          child: _mentors.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.people_outline,
-                          size: 64,
-                          color: Colors.grey[400],
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Nenhum mentor encontrado',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF6B7280),
+          // Mentors List
+          Expanded(
+            child: _mentors.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 64,
+                            color: Colors.grey[400],
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Tente ajustar seus filtros ou volte mais tarde',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF9CA3AF),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Nenhum mentor encontrado',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF6B7280),
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Tente ajustar seus filtros ou volte mais tarde',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF9CA3AF),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: _mentors.length,
+                    itemBuilder: (context, index) {
+                      final mentor = _mentors[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: _buildMentorCard(context, mentor),
+                      );
+                    },
                   ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: _mentors.length,
-                  itemBuilder: (context, index) {
-                    final mentor = _mentors[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: _buildMentorCard(context, mentor),
-                    );
-                  },
-                ),
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -372,6 +473,7 @@ class _MentorsTabState extends State<MentorsTab> {
               // Action Buttons
               Row(
                 children: [
+                  /** 
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
@@ -396,6 +498,7 @@ class _MentorsTabState extends State<MentorsTab> {
                     ),
                   ),
                   const SizedBox(width: 12),
+                  */
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
