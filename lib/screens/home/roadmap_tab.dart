@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../config/api_config.dart';
 import '../../models/course_models.dart';
+import '../../services/auth_service.dart';
 
 class RoadMapTab extends StatefulWidget {
   const RoadMapTab({super.key});
@@ -29,11 +30,51 @@ class _RoadMapTabState extends State<RoadMapTab> {
     });
 
     try {
-      // TODO: Get access token from secure storage
+      // Get user data from shared preferences
+      final userData = await AuthService.getUserData();
+
+      if (userData == null) {
+        if (mounted) {
+          setState(() {
+            _errorMessage = 'Usuário não autenticado';
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+
+      // Parse interests and strengths from comma-separated strings
+      final interests = userData.user.areasInteresse
+          .split(',')
+          .map((e) => e.trim().toLowerCase())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
+      final strengths = userData.user.pontosFortes
+          .split(',')
+          .map((e) => e.trim().toLowerCase())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
+      // Prepare request body
+      final requestBody = {
+        'interests': interests,
+        'location': userData.user.cidade,
+        'strengths': strengths,
+        'user_id': userData.user.id,
+      };
+
+      // Get authorization header
+      final authHeader = await AuthService.getAuthorizationHeader();
+      final headers = {
+        ...ApiConfig.defaultHeaders,
+        if (authHeader != null) 'Authorization': authHeader,
+      };
+
       final response = await http.post(
         Uri.parse(ApiConfig.roadmapUrl),
-        headers: ApiConfig.defaultHeaders,
-        // body: jsonEncode({}), // Add any required body parameters here
+        headers: headers,
+        body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 200) {
@@ -43,6 +84,13 @@ class _RoadMapTabState extends State<RoadMapTab> {
         if (mounted) {
           setState(() {
             _roadmapData = roadmap;
+            _isLoading = false;
+          });
+        }
+      } else if (response.statusCode == 401) {
+        if (mounted) {
+          setState(() {
+            _errorMessage = 'Sessão expirada. Faça login novamente.';
             _isLoading = false;
           });
         }
