@@ -497,7 +497,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          curso['nome'] as String,
+                          curso['name'] as String,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -506,7 +506,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          curso['instituicao'] as String,
+                          curso['institution'] as String,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF6B7280),
@@ -550,7 +550,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
 
               // Description
               Text(
-                curso['descricao'] as String,
+                curso['description'] as String,
                 style: const TextStyle(
                   fontSize: 13,
                   color: Color(0xFF6B7280),
@@ -568,14 +568,14 @@ class _RoadMapTabState extends State<RoadMapTab> {
                 children: [
                   _buildDetailChip(
                     Icons.schedule,
-                    '${curso['duracao_meses']} meses',
+                    '${curso['duration_months']} meses',
                   ),
                   _buildDetailChip(
                     Icons.location_on,
-                    curso['localizacao'] as String,
+                    curso['location'] as String,
                   ),
                   _buildDetailChip(Icons.star, '${curso['rating']}'),
-                  _buildDetailChip(Icons.category, curso['tipo'] as String),
+                  _buildDetailChip(Icons.category, curso['type'] as String),
                 ],
               ),
             ],
@@ -586,7 +586,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
   }
 
   Widget _buildCursoOnlineCard(Map<String, dynamic> curso) {
-    final certificado = curso['certificado'] as bool;
+    final certificado = curso['certificate'] as bool;
 
     return Container(
       decoration: BoxDecoration(
@@ -628,7 +628,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          curso['nome'] as String,
+                          curso['name'] as String,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -637,7 +637,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          curso['plataforma'] as String,
+                          curso['platform'] as String,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF6B7280),
@@ -682,7 +682,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
 
               // Description
               Text(
-                curso['descricao'] as String,
+                curso['description'] as String,
                 style: const TextStyle(
                   fontSize: 13,
                   color: Color(0xFF6B7280),
@@ -700,11 +700,11 @@ class _RoadMapTabState extends State<RoadMapTab> {
                 children: [
                   _buildDetailChip(
                     Icons.access_time,
-                    '${curso['duracao_horas']}h',
+                    '${curso['duration_hours']}h',
                   ),
                   _buildDetailChip(
                     Icons.signal_cellular_alt,
-                    curso['nivel'] as String,
+                    curso['level'] as String,
                   ),
                 ],
               ),
@@ -756,7 +756,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          curso['nome'] as String,
+                          curso['name'] as String,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -765,7 +765,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          curso['instituicao'] as String,
+                          curso['institution'] as String,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF6B7280),
@@ -781,7 +781,7 @@ class _RoadMapTabState extends State<RoadMapTab> {
 
               // Description
               Text(
-                curso['descricao'] as String,
+                curso['description'] as String,
                 style: const TextStyle(
                   fontSize: 13,
                   color: Color(0xFF6B7280),
@@ -799,11 +799,11 @@ class _RoadMapTabState extends State<RoadMapTab> {
                 children: [
                   _buildDetailChip(
                     Icons.schedule,
-                    '${curso['duracao_meses']} meses',
+                    '${curso['duration_months']} meses',
                   ),
                   _buildDetailChip(
                     Icons.location_on,
-                    curso['localizacao'] as String,
+                    curso['location'] as String,
                   ),
                 ],
               ),

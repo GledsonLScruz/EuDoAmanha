@@ -40,14 +40,14 @@ class CursoRecomendado {
 
   Map<String, dynamic> toJson() {
     return {
-      'nome': nome,
-      'instituicao': instituicao,
-      'tipo': tipo,
-      'duracao_meses': duracaoMeses,
+      'name': nome,
+      'institution': instituicao,
+      'type': tipo,
+      'duration_months': duracaoMeses,
       'match_score': matchScore,
-      'localizacao': localizacao,
+      'location': localizacao,
       'rating': rating,
-      'descricao': descricao,
+      'description': descricao,
       'link': link,
     };
   }
@@ -90,14 +90,14 @@ class CursoOnline {
 
   Map<String, dynamic> toJson() {
     return {
-      'nome': nome,
-      'plataforma': plataforma,
-      'tipo': tipo,
-      'duracao_horas': duracaoHoras,
-      'certificado': certificado,
-      'descricao': descricao,
+      'name': nome,
+      'platform': plataforma,
+      'type': tipo,
+      'duration_hours': duracaoHoras,
+      'certificate': certificado,
+      'description': descricao,
       'link': link,
-      'nivel': nivel,
+      'level': nivel,
     };
   }
 }
@@ -133,11 +133,11 @@ class CursoTecnico {
 
   Map<String, dynamic> toJson() {
     return {
-      'nome': nome,
-      'instituicao': instituicao,
-      'duracao_meses': duracaoMeses,
-      'localizacao': localizacao,
-      'descricao': descricao,
+      'name': nome,
+      'institution': instituicao,
+      'duration_months': duracaoMeses,
+      'location': localizacao,
+      'description': descricao,
       'link': link,
     };
   }
@@ -185,13 +185,13 @@ class ScholarshipOpportunity {
 
   Map<String, dynamic> toJson() {
     return {
-      'nome': nome,
-      'tipo': tipo,
-      'porcentagem': porcentagem,
-      'prazo': prazo,
-      'instituicoesAplicaveis': instituicoesAplicaveis,
+      'name': nome,
+      'type': tipo,
+      'percentage': porcentagem,
+      'deadline': prazo,
+      'applicable_institutions': instituicoesAplicaveis,
       'link': link,
-      'requisitos': requisitos,
+      'requirements': requisitos,
     };
   }
 }
@@ -231,11 +231,11 @@ class EntryOpportunity {
 
   Map<String, dynamic> toJson() {
     return {
-      'titulo': titulo,
-      'tipoEmpresa': tipoEmpresa,
-      'localizacao': localizacao,
-      'modalidade': modalidade,
-      'requisitos': requisitos,
+      'title': titulo,
+      'company_type': tipoEmpresa,
+      'location': localizacao,
+      'modality': modalidade,
+      'requirements': requisitos,
       'link': link,
     };
   }
@@ -272,11 +272,11 @@ class NetworkingEvent {
 
   Map<String, dynamic> toJson() {
     return {
-      'nome': nome,
-      'tipo': tipo,
-      'data': data,
-      'localizacao': localizacao,
-      'descricao': descricao,
+      'name': nome,
+      'type': tipo,
+      'date': data,
+      'location': localizacao,
+      'description': descricao,
       'link': link,
     };
   }
@@ -311,10 +311,10 @@ class SkillToDevelop {
 
   Map<String, dynamic> toJson() {
     return {
-      'nome': nome,
-      'categoria': categoria,
-      'prioridade': prioridade,
-      'ondeAprender': ondeAprender,
+      'name': nome,
+      'category': categoria,
+      'priority': prioridade,
+      'where_to_learn': ondeAprender,
     };
   }
 }
@@ -359,11 +359,11 @@ class JobMarket {
 
   Map<String, dynamic> toJson() {
     return {
-      'areasTendencia': areasTendencia,
-      'salarioInicial': salarioInicial,
-      'salarioExperiente': salarioExperiente,
-      'tendencias': tendencias,
-      'principaisEmpregadores': principaisEmpregadores,
+      'trending_areas': areasTendencia,
+      'starting_salary': salarioInicial,
+      'experienced_salary': salarioExperiente,
+      'trends': tendencias,
+      'main_employers': principaisEmpregadores,
     };
   }
 }
@@ -459,18 +459,18 @@ class RoadmapData {
 
   Map<String, dynamic> toJson() {
     return {
-      'cursosRecomendados': cursosRecomendados.map((e) => e.toJson()).toList(),
-      'cursosOnline': cursosOnline.map((e) => e.toJson()).toList(),
-      'cursosTecnicos': cursosTecnicos.map((e) => e.toJson()).toList(),
-      'bolsasEstudo': bolsasEstudo.map((e) => e.toJson()).toList(),
-      'oportunidadesEntrada': oportunidadesEntrada
+      'recommended_courses': cursosRecomendados.map((e) => e.toJson()).toList(),
+      'online_courses': cursosOnline.map((e) => e.toJson()).toList(),
+      'technical_courses': cursosTecnicos.map((e) => e.toJson()).toList(),
+      'scholarship_opportunities': bolsasEstudo.map((e) => e.toJson()).toList(),
+      'entry_opportunities': oportunidadesEntrada
           .map((e) => e.toJson())
           .toList(),
-      'eventosNetworking': eventosNetworking.map((e) => e.toJson()).toList(),
-      'habilidadesDesenvolver': habilidadesDesenvolver
+      'networking_events': eventosNetworking.map((e) => e.toJson()).toList(),
+      'skills_to_develop': habilidadesDesenvolver
           .map((e) => e.toJson())
           .toList(),
-      if (mercadoTrabalho != null) 'mercadoTrabalho': mercadoTrabalho!.toJson(),
+      if (mercadoTrabalho != null) 'job_market': mercadoTrabalho!.toJson(),
     };
   }
 }
