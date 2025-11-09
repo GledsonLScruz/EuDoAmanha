@@ -4,10 +4,7 @@ import '../../../../models/signup_data_new.dart';
 class MenteeInterestsScreen extends StatefulWidget {
   final SignUpDataNew signUpData;
 
-  const MenteeInterestsScreen({
-    super.key,
-    required this.signUpData,
-  });
+  const MenteeInterestsScreen({super.key, required this.signUpData});
 
   @override
   State<MenteeInterestsScreen> createState() => _MenteeInterestsScreenState();
@@ -15,22 +12,17 @@ class MenteeInterestsScreen extends StatefulWidget {
 
 class _MenteeInterestsScreenState extends State<MenteeInterestsScreen> {
   final _strengthsController = TextEditingController();
-  final _areasOfInterestController = TextEditingController();
   String? _strengthsError;
-  String? _areasOfInterestError;
 
   @override
   void initState() {
     super.initState();
     _strengthsController.text = widget.signUpData.menteeStrengths ?? '';
-    _areasOfInterestController.text =
-        widget.signUpData.menteeAreasOfInterest ?? '';
   }
 
   @override
   void dispose() {
     _strengthsController.dispose();
-    _areasOfInterestController.dispose();
     super.dispose();
   }
 
@@ -44,35 +36,19 @@ class _MenteeInterestsScreenState extends State<MenteeInterestsScreen> {
     });
   }
 
-  void _validateAreasOfInterest() {
-    setState(() {
-      if (_areasOfInterestController.text.isEmpty) {
-        _areasOfInterestError = 'Areas of interest are required';
-      } else {
-        _areasOfInterestError = null;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Text(
-          'Interests & Strengths',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          'Strengths',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         const Text(
-          'Share what you love and what you\'re good at',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
-          ),
+          'Share what you\'re good at',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
         const SizedBox(height: 32),
 
@@ -87,7 +63,7 @@ class _MenteeInterestsScreenState extends State<MenteeInterestsScreen> {
             errorText: _strengthsError,
             helperText: 'What are you naturally good at?',
           ),
-          maxLines: 3,
+          maxLines: 5,
           onChanged: (value) {
             widget.signUpData.menteeStrengths = value;
             if (_strengthsError != null) {
@@ -101,35 +77,7 @@ class _MenteeInterestsScreenState extends State<MenteeInterestsScreen> {
           },
           onEditingComplete: _validateStrengths,
         ),
-        const SizedBox(height: 16),
-
-        // Areas of Interest
-        TextField(
-          controller: _areasOfInterestController,
-          decoration: InputDecoration(
-            labelText: 'Areas of Interest',
-            hintText: 'Technology, arts, sports, social causes...',
-            border: const OutlineInputBorder(),
-            prefixIcon: const Icon(Icons.interests),
-            errorText: _areasOfInterestError,
-            helperText: 'What topics or fields interest you?',
-          ),
-          maxLines: 3,
-          onChanged: (value) {
-            widget.signUpData.menteeAreasOfInterest = value;
-            if (_areasOfInterestError != null) {
-              _validateAreasOfInterest();
-            }
-          },
-          onTap: () {
-            setState(() {
-              _areasOfInterestError = null;
-            });
-          },
-          onEditingComplete: _validateAreasOfInterest,
-        ),
       ],
     );
   }
 }
-

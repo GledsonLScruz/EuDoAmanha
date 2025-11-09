@@ -128,10 +128,13 @@ class ReviewScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          _buildSectionHeader(context, 'Interests & Strengths', () => onEdit(4)),
+          _buildSectionHeader(context, 'Strengths', () => onEdit(4)),
           _buildInfoRow('Strengths', signUpData.menteeStrengths ?? ''),
+          const SizedBox(height: 24),
+
+          _buildSectionHeader(context, 'Areas of Interest', () => onEdit(5)),
           _buildInfoRow(
-            'Areas of Interest',
+            'Selected Areas',
             signUpData.menteeAreasOfInterest ?? '',
           ),
         ],

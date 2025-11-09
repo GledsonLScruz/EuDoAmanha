@@ -7,6 +7,7 @@ import 'screens/mentee/mentee_location_screen.dart';
 import 'screens/mentee/mentee_identity_screen.dart';
 import 'screens/mentee/mentee_school_screen.dart';
 import 'screens/mentee/mentee_interests_screen.dart';
+import 'screens/mentee/mentee_areas_screen.dart';
 import 'screens/mentor/mentor_background_screen.dart';
 import 'screens/mentor/mentor_identity_screen.dart';
 import 'screens/mentor/mentor_education_screen.dart';
@@ -31,7 +32,7 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
     if (_signUpData.isMentor == true) {
       return 7; // Welcome + 5 mentor screens + Review
     } else {
-      return 6; // Welcome + 4 mentee screens + Review
+      return 7; // Welcome + 5 mentee screens + Review
     }
   }
 
@@ -73,8 +74,10 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
         case 3:
           return 'School';
         case 4:
-          return 'Interests & Strengths';
+          return 'Strengths';
         case 5:
+          return 'Areas of Interest';
+        case 6:
           return 'Review';
         default:
           return '';
@@ -242,14 +245,10 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
             return 'Areas of interest are required';
           }
         } else {
-          // Mentee Interests & Strengths
+          // Mentee Strengths
           if (_signUpData.menteeStrengths == null ||
               _signUpData.menteeStrengths!.isEmpty) {
             return 'Strengths are required';
-          }
-          if (_signUpData.menteeAreasOfInterest == null ||
-              _signUpData.menteeAreasOfInterest!.isEmpty) {
-            return 'Areas of interest are required';
           }
         }
         return null;
@@ -261,8 +260,13 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
               _signUpData.mentorExtracurricularActivities!.isEmpty) {
             return 'Extracurricular activities are required';
           }
+        } else {
+          // Mentee Areas of Interest
+          if (_signUpData.menteeAreasOfInterest == null ||
+              _signUpData.menteeAreasOfInterest!.isEmpty) {
+            return 'Please select at least one area of interest';
+          }
         }
-        // Mentee case 5 is Review, no validation needed
         return null;
 
       default:
@@ -333,11 +337,7 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
         if (_signUpData.isMentor == true) {
           return MentorActivitiesScreen(signUpData: _signUpData);
         } else {
-          return ReviewScreen(
-            signUpData: _signUpData,
-            onEdit: _jumpToStep,
-            onSubmit: _handleFinalSubmit,
-          );
+          return MenteeAreasScreen(signUpData: _signUpData);
         }
       case 6:
         return ReviewScreen(
@@ -357,9 +357,7 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
       return RoleSelectionScreen(onRoleSelected: _handleRoleSelection);
     }
 
-    final isReviewStep =
-        (_signUpData.isMentor == true && _currentStep == 6) ||
-        (_signUpData.isMentor == false && _currentStep == 5);
+    final isReviewStep = _currentStep == 6;
 
     return Scaffold(
       appBar: AppBar(
