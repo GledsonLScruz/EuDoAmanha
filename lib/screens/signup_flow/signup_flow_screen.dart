@@ -47,7 +47,7 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
     if (_currentStep == 0) {
       return 'Account Info';
     }
-    
+
     if (_signUpData.isMentor == true) {
       switch (_currentStep) {
         case 1:
@@ -74,9 +74,9 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
         case 3:
           return 'School';
         case 4:
-          return 'Strengths';
-        case 5:
           return 'Areas of Interest';
+        case 5:
+          return 'Strengths';
         case 6:
           return 'Review';
         default:
@@ -116,14 +116,12 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
     }
   }
 
-
   void _jumpToStep(int step) {
     setState(() {
       _currentStep = step;
       _validationError = null;
     });
   }
-
 
   String? _validateCurrentStep() {
     switch (_currentStep) {
@@ -245,10 +243,10 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
             return 'Areas of interest are required';
           }
         } else {
-          // Mentee Strengths
-          if (_signUpData.menteeStrengths == null ||
-              _signUpData.menteeStrengths!.isEmpty) {
-            return 'Strengths are required';
+          // Mentee Areas of Interest
+          if (_signUpData.menteeAreasOfInterest == null ||
+              _signUpData.menteeAreasOfInterest!.isEmpty) {
+            return 'Please select at least one area of interest';
           }
         }
         return null;
@@ -261,10 +259,10 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
             return 'Extracurricular activities are required';
           }
         } else {
-          // Mentee Areas of Interest
-          if (_signUpData.menteeAreasOfInterest == null ||
-              _signUpData.menteeAreasOfInterest!.isEmpty) {
-            return 'Please select at least one area of interest';
+          // Mentee Strengths
+          if (_signUpData.menteeStrengths == null ||
+              _signUpData.menteeStrengths!.isEmpty) {
+            return 'Strengths are required';
           }
         }
         return null;
@@ -331,13 +329,13 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
         if (_signUpData.isMentor == true) {
           return MentorStrengthsScreen(signUpData: _signUpData);
         } else {
-          return MenteeInterestsScreen(signUpData: _signUpData);
+          return MenteeAreasScreen(signUpData: _signUpData);
         }
       case 5:
         if (_signUpData.isMentor == true) {
           return MentorActivitiesScreen(signUpData: _signUpData);
         } else {
-          return MenteeAreasScreen(signUpData: _signUpData);
+          return MenteeInterestsScreen(signUpData: _signUpData);
         }
       case 6:
         return ReviewScreen(
@@ -467,34 +465,34 @@ class _SignUpFlowScreenState extends State<SignUpFlowScreen> {
               ],
             ),
             child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (_currentStep > 0)
-                      OutlinedButton(
-                        onPressed: _handleBack,
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 16,
-                          ),
-                        ),
-                        child: const Text('Back'),
-                      )
-                    else
-                      const SizedBox.shrink(),
-                    if (!isReviewStep)
-                      ElevatedButton(
-                        onPressed: _handleNext,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 16,
-                          ),
-                        ),
-                        child: const Text('Next'),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (_currentStep > 0)
+                  OutlinedButton(
+                    onPressed: _handleBack,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
                       ),
-                  ],
-                ),
+                    ),
+                    child: const Text('Back'),
+                  )
+                else
+                  const SizedBox.shrink(),
+                if (!isReviewStep)
+                  ElevatedButton(
+                    onPressed: _handleNext,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                    ),
+                    child: const Text('Next'),
+                  ),
+              ],
+            ),
           ),
         ],
       ),
