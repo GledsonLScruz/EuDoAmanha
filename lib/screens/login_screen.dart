@@ -4,6 +4,8 @@ import 'home_screen.dart';
 import '../config/api_config.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/user_logged_data.dart';
+import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -95,13 +97,22 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (response.statusCode == 200) {
-        // Success - parse response and navigate to home
-        // final data = jsonDecode(response.body);
+        // Success - parse response and save user data
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final userData = UserLoggedData.fromJson(data);
 
-        // TODO: Store access token securely
-        // final accessToken = data['access_token'];
-        // final tokenType = data['token_type'];
-        // Store in secure storage or state management
+        // Save user data to shared preferences
+        final saved = await AuthService.saveUserData(userData);
+
+        if (!saved) {
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+              _generalError = 'Erro ao salvar dados do usuário';
+            });
+          }
+          return;
+        }
 
         if (mounted) {
           setState(() {

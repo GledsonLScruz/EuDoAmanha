@@ -1,0 +1,70 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/user_logged_data.dart';
+
+/// Service to handle authentication and user session management
+class AuthService {
+  static const String _userDataKey = 'userloggeddata';
+
+  /// Save user data to shared preferences
+  static Future<bool> saveUserData(UserLoggedData userData) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = jsonEncode(userData.toJson());
+      return await prefs.setString(_userDataKey, jsonString);
+    } catch (e) {
+      print('Error saving user data: $e');
+      return false;
+    }
+  }
+
+  /// Get user data from shared preferences
+  static Future<UserLoggedData?> getUserData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = prefs.getString(_userDataKey);
+      
+      if (jsonString == null || jsonString.isEmpty) {
+        return null;
+      }
+
+      final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+      return UserLoggedData.fromJson(jsonMap);
+    } catch (e) {
+      print('Error getting user data: $e');
+      return null;
+    }
+  }
+
+  /// Check if user is authenticated
+  static Future<bool> isAuthenticated() async {
+    final userData = await getUserData();
+    return userData != null && userData.accessToken.isNotEmpty;
+  }
+
+  /// Clear user data (logout)
+  static Future<bool> clearUserData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return await prefs.remove(_userDataKey);
+    } catch (e) {
+      print('Error clearing user data: $e');
+      return false;
+    }
+  }
+
+  /// Get access token
+  static Future<String?> getAccessToken() async {
+    final userData = await getUserData();
+    return userData?.accessToken;
+  }
+
+  /// Get authorization header
+  static Future<String?> getAuthorizationHeader() async {
+    final userData = await getUserData();
+    if (userData == null) return null;
+    
+    return '${userData.tokenType} ${userData.accessToken}';
+  }
+}
+
